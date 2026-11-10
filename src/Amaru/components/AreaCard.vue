@@ -25,10 +25,14 @@
 
     <div v-if="expanded" class="border-t border-slate-200">
       <div v-for="(competencia, index) in competencias" :key="index">
-        <CompetenciaCard :title="competencia.title" class="flex flex-wrap" :key="index">
+        <CompetenciaCard
+          :title="competencia.title"
+          class="flex flex-wrap overflow-x-auto"
+          :key="index"
+        >
           <CapacidadList :capacidades="competencia.capacidades" />
 
-          <EstandarCard :text="competencia.estandar" />
+          <EstandarCard :estandar="competencia.estandar" />
 
           <DesempenoCard :desempenos="competencia.desempenos" class="col-span-2" />
         </CompetenciaCard>
@@ -47,11 +51,22 @@ import CompetenciaCard from './CompetenciaCard.vue'
 import CapacidadList from './CapacidadList.vue'
 import DesempenoCard from './DesempenoCard.vue'
 import EstandarCard from './EstandarCard.vue'
-import type { Area, Capacidades, Competencia, Desempeno, Estandar } from '../types/main.ts'
+import type {
+  Area,
+  Capacidades,
+  Competencia,
+  DesempenoInicial,
+  DesempenoPrimaria,
+  EstandarInicial,
+  EstandarPrimaria,
+} from '../types/main.ts'
 
 defineProps<
   Area & {
-    competencias: (Competencia & Capacidades & Estandar & { desempenos: Desempeno })[]
+    competencias: (Competencia &
+      Capacidades & { estandar: EstandarInicial | EstandarPrimaria } & {
+        desempenos: DesempenoInicial | DesempenoPrimaria
+      })[]
   }
 >()
 const expanded = ref(false)

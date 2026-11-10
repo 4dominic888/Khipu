@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import Amaru from './Amaru/AmaruPage.vue'
+import { RouterView } from 'vue-router'
 </script>
 
 <template>
-  <Amaru />
+  <RouterView />
 </template>
 
 <style scoped></style>
