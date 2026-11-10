@@ -7,6 +7,11 @@ import ComunicacionIcon from './Icons/ComunicacionIcon.vue'
 import CompetenciasTransversalesIcon from './Icons/CompetenciasTransversalesIcon.vue'
 import DefaultIcon from './Icons/DefaultIcon.vue'
 import { computed } from 'vue'
+import EdFisicaIcon from './Icons/EdFisicaIcon.vue'
+import ArteIcon from './Icons/ArteIcon.vue'
+import CastellanoIcon from './Icons/CastellanoIcon.vue'
+import EnglishIcon from './Icons/EnglishIcon.vue'
+import ReligionIcon from './Icons/ReligionIcon.vue'
 
 type AreasName = keyof typeof icons
 
@@ -21,6 +26,11 @@ const icons = {
   Matemática: MatematicaIcon,
   Comunicación: ComunicacionIcon,
   'Competencias Transversales': CompetenciasTransversalesIcon,
+  'Educación Física': EdFisicaIcon,
+  'Arte y Cultura': ArteIcon,
+  'Castellano como segunda lengua': CastellanoIcon,
+  'Inglés como lengua extranjera': EnglishIcon,
+  'Educación Religiosa': ReligionIcon,
 } as const
 
 function isIconName(name: string): name is AreasName {
