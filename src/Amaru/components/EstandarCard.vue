@@ -1,9 +1,9 @@
 <template>
   <div class="rounded-lg border border-purple-200 p-4">
-    <template v-if="typeof props.estandar === 'string'">
+    <template v-if="isInicial">
       <div class="flex items-center gap-4 text-purple-700">
         <h2 class="mb-3 text-sm font-semibold uppercase tracking-wide text-purple-700">
-          Estándar de aprendizaje Ciclo II
+          Estándar de aprendizaje del ciclo 2
         </h2>
 
         <CopyToClipboardComponents :text="`${estandar}`" class="mb-3" />
@@ -13,7 +13,8 @@
         {{ estandar }}
       </h3>
     </template>
-    <template v-else>
+
+    <template v-if="isPrimaria">
       <div class="flex flex-col gap-4 justify-center text-blue-700">
         <h2 class="mb-3 text-sm font-semibold uppercase tracking-wide text-blue-700">
           Estándares de aprendizaje
@@ -35,17 +36,21 @@
 import { computed } from 'vue'
 import {
   CICLOS_KEYS,
-  type CiclosPossibleKeys,
+  type CiclosKeys,
+  type EducationType,
   type EstandarInicial,
   type EstandarPrimaria,
 } from '../types/main.ts'
 import CopyToClipboardComponents from './CopyToClipboardComponents.vue'
 import EstandarCycle from './EstandarCycle.vue'
 
-const props = defineProps<{ estandar: EstandarInicial | EstandarPrimaria }>()
-let availableKeys: CiclosPossibleKeys[] = []
+const props = defineProps<{ estandar: EstandarInicial | EstandarPrimaria; type: EducationType }>()
 
-if (!(typeof props.estandar === 'string')) {
+const isInicial = props.type === 'inicial'
+const isPrimaria = props.type === 'primaria'
+
+let availableKeys: CiclosKeys[] = []
+if (isPrimaria) {
   availableKeys = computed(() =>
     CICLOS_KEYS.filter((key) => (props.estandar as EstandarPrimaria)[key] != null),
   ).value

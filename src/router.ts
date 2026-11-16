@@ -1,13 +1,24 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import AmaruInicialPage from './Amaru/AmaruInicialPage.vue'
-import AmaruPrimariaPage from './Amaru/AmaruPrimariaPage.vue'
+import AmaruPage from './Amaru/AmaruPage.vue'
 
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
   routes: [
     { path: '/', redirect: '/primaria' },
-    { path: '/inicial', component: AmaruInicialPage },
-    { path: '/primaria', component: AmaruPrimariaPage },
+    {
+      path: '/inicial',
+      component: AmaruPage,
+      props: {
+        type: 'inicial',
+      },
+    },
+    {
+      path: '/primaria',
+      component: AmaruPage,
+      props: {
+        type: 'primaria',
+      },
+    },
   ],
 })
 

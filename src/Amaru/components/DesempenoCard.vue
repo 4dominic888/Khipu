@@ -3,23 +3,23 @@
     <h2 class="mb-4 text-sm font-semibold uppercase tracking-wide text-red-700">Desempeños</h2>
 
     <div class="grid grid-flow-col auto-cols-max justify-center gap-5">
-      <template v-if="!('6' in props.desempenos)">
+      <template v-if="isPrimaria">
         <section v-for="key in availableKeys" :key="key">
           <DesempenoDialog
-            :title="key + ' años'"
+            :title="PRIMARIA_DESEMPENO_LABELS[key]"
             :raw-name="key"
-            :type="desempenoType"
+            :type="type"
             :desempeno="(props.desempenos as any)[key]!"
           />
         </section>
       </template>
-      <template v-else>
+      <template v-if="isInicial">
         <section v-for="key in availableKeys" :key="key">
           <DesempenoDialog
             :raw-name="key"
-            :title="key + '° grado'"
-            :type="desempenoType"
-            :desempeno="(props.desempenos as DesempenoPrimaria)[key]!"
+            :title="INICIAL_DESEMPENO_LABELS[key as InicialDesempenosKeys]"
+            :type="type"
+            :desempeno="(props.desempenos as any)[key]!"
           />
         </section>
       </template>
@@ -30,29 +30,35 @@
 <script setup lang="ts">
 import {
   INICIAL_DESEMPENO_KEYS,
+  INICIAL_DESEMPENO_LABELS,
   PRIMARIA_DESEMPENO_KEYS,
+  PRIMARIA_DESEMPENO_LABELS,
   type DesempenoInicial,
   type DesempenoPrimaria,
   type EducationType,
-  type InicialDesempenosPossibleKeys,
-  type PrimariaDesempenosPossibleKeys,
+  type InicialDesempenosKeys,
+  type PrimariaDesempenosKeys,
 } from '../types/main.ts'
 import DesempenoDialog from './DesempenoDialog.vue'
 import { computed } from 'vue'
 
-const props = defineProps<{ desempenos: DesempenoInicial | DesempenoPrimaria }>()
-let availableKeys: (InicialDesempenosPossibleKeys | PrimariaDesempenosPossibleKeys)[]
-let desempenoType: EducationType
+const props = defineProps<{
+  desempenos: DesempenoInicial | DesempenoPrimaria
+  type: EducationType
+}>()
 
-if ('6' in props.desempenos) {
+const isInicial = props.type === 'inicial'
+const isPrimaria = props.type === 'primaria'
+
+let availableKeys: (InicialDesempenosKeys | PrimariaDesempenosKeys)[]
+
+if (isPrimaria) {
   availableKeys = computed(() =>
     PRIMARIA_DESEMPENO_KEYS.filter((key) => (props.desempenos as DesempenoPrimaria)[key] != null),
   ).value
-  desempenoType = 'primaria'
 } else {
   availableKeys = computed(() =>
     INICIAL_DESEMPENO_KEYS.filter((key) => (props.desempenos as DesempenoInicial)[key] != null),
   ).value
-  desempenoType = 'inicial'
 }
 </script>
