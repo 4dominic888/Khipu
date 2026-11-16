@@ -1,7 +1,5 @@
 <template>
-  <article
-    class="overflow-hidden rounded-xl border border-slate-200 bg-white transition-shadow shadow-md p-2 my-2"
-  >
+  <article class="rounded-xl border border-slate-200 bg-white transition-shadow shadow-md p-2 my-2">
     <Button
       variant="ghost"
       class="flex w-full items-center gap-4 p-5 text-left"
@@ -26,11 +24,7 @@
 
     <div v-if="expanded" class="border-t border-slate-200">
       <div v-for="(competencia, index) in data.competencias" :key="index">
-        <CompetenciaCard
-          :title="competencia.title"
-          class="flex flex-wrap overflow-x-auto"
-          :key="index"
-        >
+        <CompetenciaCard :title="competencia.title" :key="index">
           <CapacidadList :capacidades="competencia.capacidades" />
 
           <EstandarCard :estandar="competencia.estandar" :type="type" />

@@ -17,9 +17,72 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{ visible: boolean }>()
+import { onMounted, onUnmounted, watch } from 'vue'
+
+const props = defineProps<{ visible: boolean }>()
 
 const emit = defineEmits<{
   close: []
 }>()
+
+let historyEntryActive = false
+let mounted = false
+
+function handleKeydown(event: KeyboardEvent) {
+  if (event.key === 'Escape') emit('close')
+}
+
+function handlePopState() {
+  if (!historyEntryActive) return
+
+  historyEntryActive = false
+  emit('close')
+}
+
+function activate() {
+  window.addEventListener('keydown', handleKeydown)
+  window.addEventListener('popstate', handlePopState)
+
+  // Agregar una entrada al historial para interceptar el botón atrás.
+  window.history.pushState({ ...window.history.state, modalOpen: true }, '')
+
+  historyEntryActive = true
+}
+
+function deactivate() {
+  window.removeEventListener('keydown', handleKeydown)
+  window.removeEventListener('popstate', handlePopState)
+
+  // Retirar la entrada agregada al historial si todavía existe.
+  if (historyEntryActive) {
+    historyEntryActive = false
+    window.history.back()
+  }
+}
+
+watch(
+  () => props.visible,
+  (visible) => {
+    if (!mounted) return
+
+    if (visible) {
+      activate()
+    } else {
+      deactivate()
+    }
+  },
+)
+
+onMounted(() => {
+  mounted = true
+
+  if (props.visible) {
+    activate()
+  }
+})
+
+onUnmounted(() => {
+  deactivate()
+  mounted = false
+})
 </script>

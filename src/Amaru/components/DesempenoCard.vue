@@ -2,7 +2,7 @@
   <div class="rounded-lg border border-slate-200 bg-white p-4">
     <h2 class="mb-4 text-sm font-semibold uppercase tracking-wide text-red-700">Desempeños</h2>
 
-    <div class="grid grid-flow-col auto-cols-max justify-center gap-5">
+    <div class="flex flex-row justify-center-safe gap-5 overflow-x-auto overscroll-contain mx-5">
       <template v-if="isPrimaria">
         <section v-for="key in availableKeys" :key="key">
           <DesempenoDialog
@@ -29,15 +29,13 @@
 
 <script setup lang="ts">
 import {
-  INICIAL_DESEMPENO_KEYS,
   INICIAL_DESEMPENO_LABELS,
-  PRIMARIA_DESEMPENO_KEYS,
+  InicialDesempenosKeys,
   PRIMARIA_DESEMPENO_LABELS,
+  PrimariaDesempenosKeys,
   type DesempenoInicial,
   type DesempenoPrimaria,
   type EducationType,
-  type InicialDesempenosKeys,
-  type PrimariaDesempenosKeys,
 } from '../types/main.ts'
 import DesempenoDialog from './DesempenoDialog.vue'
 import { computed } from 'vue'
@@ -54,11 +52,15 @@ let availableKeys: (InicialDesempenosKeys | PrimariaDesempenosKeys)[]
 
 if (isPrimaria) {
   availableKeys = computed(() =>
-    PRIMARIA_DESEMPENO_KEYS.filter((key) => (props.desempenos as DesempenoPrimaria)[key] != null),
+    PrimariaDesempenosKeys.values.filter(
+      (key) => (props.desempenos as DesempenoPrimaria)[key] != null,
+    ),
   ).value
 } else {
   availableKeys = computed(() =>
-    INICIAL_DESEMPENO_KEYS.filter((key) => (props.desempenos as DesempenoInicial)[key] != null),
+    InicialDesempenosKeys.values.filter(
+      (key) => (props.desempenos as DesempenoInicial)[key] != null,
+    ),
   ).value
 }
 </script>

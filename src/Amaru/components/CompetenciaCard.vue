@@ -1,5 +1,5 @@
 <template>
-  <div class="border-b border-slate-100">
+  <div class="border-b border-slate-100 w-full min-w-0">
     <div
       variant="ghost"
       class="flex w-full items-center gap-3 p-4 bg-slate-50 text-left cursor-pointer"
@@ -14,13 +14,15 @@
         {{ title }}
       </span>
 
-      <CopyToClipboardComponents :text="title" class="ml-auto" @click.stop />
+      <CopyToClipboardComponents :text="title" class="ml-auto shrink-0" @click.stop />
 
       <ChevronDownIcon class="size-4 transition-transform" :class="{ 'rotate-180': expanded }" />
     </div>
 
-    <div v-if="expanded" class="grid gap-4 p-5 md:grid-cols-2">
-      <slot />
+    <div v-if="expanded" class="w-full min-w-0 gap-4 p-5">
+      <div class="grid grid-cols-2 gap-4 max-w-full">
+        <slot />
+      </div>
     </div>
   </div>
 </template>

@@ -1,37 +1,80 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, onUnmounted, ref } from 'vue'
 
 const props = withDefaults(
-    defineProps<{
-        text: string
-        size?: 'sm' | 'md' | 'lg'
-    }>(),
-    {
-        size: 'md'
-    }
+  defineProps<{
+    text: string
+    size?: 'sm' | 'md' | 'lg'
+  }>(),
+  {
+    size: 'md',
+  },
 )
 
 const emit = defineEmits<{
-    copied: [text: string]
-}>();
+  copied: [text: string]
+}>()
 
-const isCopied = ref(false);
+const isCopied = ref(false)
+let timeout: number | undefined
 
 const classSize = computed(() => ({
-    sm: 'px-2 py-1 text-xs [&>svg]:h-4 [&>svg]:w-4',
-    md: 'px-4 py-2 text-sm [&>svg]:h-5 [&>svg]:w-5',
-    lg: 'px-5 py-3 text-base [&>svg]:h-6 [&>svg]:w-6'
-}));
+  sm: 'px-2 py-1 text-xs [&>svg]:h-4 [&>svg]:w-4',
+  md: 'px-4 py-2 text-sm [&>svg]:h-5 [&>svg]:w-5',
+  lg: 'px-5 py-3 text-base [&>svg]:h-6 [&>svg]:w-6',
+}))
+
+function fallbackCopy(text: string): boolean {
+  const textarea = document.createElement('textarea')
+
+  textarea.value = text
+  textarea.setAttribute('readonly', '')
+  textarea.style.position = 'fixed'
+  textarea.style.opacity = '0'
+  textarea.style.top = '0'
+  textarea.style.left = '0'
+
+  document.body.appendChild(textarea)
+
+  textarea.focus()
+  textarea.select()
+  textarea.setSelectionRange(0, textarea.value.length)
+
+  const success = document.execCommand('copy')
+
+  textarea.remove()
+
+  return success
+}
 
 async function copyToClipboard(text: string): Promise<void> {
-    await navigator.clipboard.writeText(text);
-    isCopied.value = true;
-    emit('copied', text);
+  try {
+    if (navigator.clipboard?.writeText) {
+      try {
+        await navigator.clipboard.writeText(text)
+      } catch {
+        if (!fallbackCopy(text)) throw new Error('No se pudo copiar')
+      }
+    } else {
+      if (!fallbackCopy(text)) throw new Error('No se pudo copiar')
+    }
 
-    window.setTimeout(() => {
-        isCopied.value = false;
-    }, 2000);
+    isCopied.value = true
+    emit('copied', text)
+
+    window.clearTimeout(timeout)
+
+    timeout = window.setTimeout(() => {
+      isCopied.value = false
+    }, 2000)
+  } catch (error) {
+    console.error('Error al copiar:', error)
+  }
 }
+
+onUnmounted(() => {
+  window.clearTimeout(timeout)
+})
 </script>
 <template>
   <button

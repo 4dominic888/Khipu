@@ -15,11 +15,12 @@
     </template>
 
     <template v-if="isPrimaria">
-      <div class="flex flex-col gap-4 justify-center text-blue-700">
-        <h2 class="mb-3 text-sm font-semibold uppercase tracking-wide text-blue-700">
+      <div class="flex flex-col gap-4 h-full">
+        <h2 class="flex-none mb-3 text-sm font-semibold uppercase tracking-wide text-blue-700">
           Estándares de aprendizaje
         </h2>
-        <div class="flex flex-col items-center">
+
+        <div class="flex-1 flex flex-col items-center place-content-center h-auto">
           <section v-for="key in availableKeys" :key="key">
             <EstandarCycle
               :cycle-name="key"
@@ -35,8 +36,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import {
-  CICLOS_KEYS,
-  type CiclosKeys,
+  CiclosKeys,
   type EducationType,
   type EstandarInicial,
   type EstandarPrimaria,
@@ -52,7 +52,7 @@ const isPrimaria = props.type === 'primaria'
 let availableKeys: CiclosKeys[] = []
 if (isPrimaria) {
   availableKeys = computed(() =>
-    CICLOS_KEYS.filter((key) => (props.estandar as EstandarPrimaria)[key] != null),
+    CiclosKeys.values.filter((key) => (props.estandar as EstandarPrimaria)[key] != null),
   ).value
 }
 </script>

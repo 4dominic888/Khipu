@@ -1,8 +1,8 @@
 <template>
-  <button @click="open = true" type="button" class="mb-3 flex items-center gap-1 hover:opacity-70">
+  <button @click="open = true" type="button" class="my-3 flex hover:opacity-70">
     <div
       class="center relative inline-block select-none whitespace-nowrap rounded-lg py-2 px-3.5 align-baseline font-sans text-xs font-bold uppercase leading-none text-white"
-      :class="badgeStyle"
+      :class="buttonBackgroundColor"
     >
       {{ title }}
     </div>
@@ -10,7 +10,7 @@
 
   <AmaruModal :visible="open" @close="open = false">
     <template #header>
-      <h2 class="text-xl font-semibold">Desempeño de {{ title }}</h2>
+      <h2 class="text-xl font-semibold" :class="modalHeaderColor">Desempeño de {{ title }}</h2>
     </template>
 
     <ul class="space-y-3">
@@ -20,7 +20,7 @@
         class="flex flex-col items-start gap-2 rounded-lg bg-slate-50 p-3 text-sm leading-7 text-slate-700"
       >
         <div class="flex w-full items-baseline gap-3">
-          <span class="size-1.5 shrink-0 rounded-full" :class="badgeStyle"></span>
+          <span class="size-1.5 shrink-0 rounded-full" :class="buttonBackgroundColor"></span>
 
           <p class="min-w-0 text-justify leading-7">
             {{ item.def }}
@@ -56,14 +56,20 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import type {
-  Desempeno,
-  EducationType,
+import {
   InicialDesempenosKeys,
   PrimariaDesempenosKeys,
+  type Desempeno,
+  type EducationType,
 } from '../types/main.ts'
 import CopyToClipboardComponents from './CopyToClipboardComponents.vue'
-import { badgeColorInicial, badgeColorPrimaria } from '../utils/function.ts'
+import {
+  backgroundColors,
+  badgeColorInicial,
+  badgeColorPrimaria,
+  badgeSelectColor,
+  foregroundColors,
+} from '../utils/function.ts'
 import AmaruModal from './AmaruModal.vue'
 
 const props = defineProps<{
@@ -75,9 +81,11 @@ const props = defineProps<{
 
 const isInicial = props.type === 'inicial'
 
-const badgeStyle = isInicial
-  ? badgeColorInicial(props.rawName as InicialDesempenosKeys)
-  : badgeColorPrimaria(props.rawName as PrimariaDesempenosKeys)
+const selectedColor = isInicial
+  ? badgeSelectColor(props.rawName, InicialDesempenosKeys.parse, badgeColorInicial)
+  : badgeSelectColor(props.rawName, PrimariaDesempenosKeys.parse, badgeColorPrimaria)
 
+const buttonBackgroundColor = backgroundColors[selectedColor]
+const modalHeaderColor = foregroundColors[selectedColor]
 const open = ref(false)
 </script>
